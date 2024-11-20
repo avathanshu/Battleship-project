@@ -1,7 +1,7 @@
-function Ship(len=2, hit=0, sunk=false) {
+function Ship(len=2, isHit=0, sunk=false) {
     let length = len;
     let hits = hit;
-    let isSunk = sunk;
+    let Sunk = sunk;
 
     function hit() {
         hits++;
@@ -12,7 +12,7 @@ function Ship(len=2, hit=0, sunk=false) {
             isSunk = true;
         }
     }
-    return { length, hits, isSunk }
+    return { length, hits, Sunk, hit, isSunk }
 }
 
 function Gameboard() {
@@ -27,16 +27,44 @@ function Gameboard() {
     }
 
     function placeShip(x,y) {
-        let posY = y;
-        let posX = x;
-        
-        const ship = new Ship();
-        board[posY][posX].push(ship);
-    }
+        const size = Math.floor(Math.random() * 3) + 1
+        const ship = new Ship(size, 0, false);
 
-    function receiveAttack(x,y) {
-        if (board[y][x]) {
+        const orientation = Math.floor(Math.random() * 2)
 
+        if (orientation == 0) {
+            if (board[y-size]) {
+                for (let i = 0; i < size; i++) {
+                    board[y-i][x].push(ship);
+                }
+            }
+
+            else if (board[y+size]) {
+                for (let i = 0; i < size; i++) {
+                    board[y+i][x].push(ship);
+                }
+            }
+        }
+
+        else if (orientation == 1) {
+            if (board[y][x-size]) {
+                for (let i = 0; i < size; i++) {
+                    board[y-i][x].push(ship);
+                }
+            }
+
+            else if (board[y][x+size]) {
+                for (let i = 0; i < size; i++) {
+                    board[y+i][x].push(ship);
+                }
+            }
         }
     }
+
+    return { board, placeShip }
 }
+
+const playerPrimary = Gameboard()
+playerPrimary.placeShip(0,0)
+
+console.log(Gameboard().board)
